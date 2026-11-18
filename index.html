@@ -1,0 +1,122 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Начало Online | Карусель</title>
+<style>
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 25px 12px;
+  background: #f5f3ef;
+  color: #222;
+  font-family: Arial, sans-serif;
+}
+.container {
+  max-width: 520px;
+  margin: auto;
+  text-align: center;
+}
+h2 { font-size: 22px; }
+.carousel {
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #ddd;
+  touch-action: pan-y;
+}
+.carousel img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 0;
+  border-radius: 50%;
+  background: #ffffffd9;
+  padding: 12px 16px;
+  font-size: 22px;
+  cursor: pointer;
+}
+.prev { left: 10px; }
+.next { right: 10px; }
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 7px;
+  margin: 16px;
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #bbb;
+}
+.dot.active { background: #222; }
+.counter { color: #777; font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h2>Начало Online</h2>
+  <div class="carousel" id="carousel">
+    <img id="slide" src="photo1.jpg" alt="Фото карусели">
+    <button class="arrow prev" onclick="move(-1)">‹</button>
+    <button class="arrow next" onclick="move(1)">›</button>
+  </div>
+  <div class="dots" id="dots"></div>
+  <p class="counter" id="counter"></p>
+  <p>Листайте фотографии вправо и влево</p>
+</div>
+<script>
+const photos = [
+  "photo1.jpg",
+  "photo2.jpg",
+  "photo3.jpg",
+  "photo4.jpg",
+  "photo5.jpg"
+];
+
+let current = 0;
+const slide = document.getElementById("slide");
+const dots = document.getElementById("dots");
+const counter = document.getElementById("counter");
+
+function showSlide() {
+  slide.src = photos[current];
+  counter.textContent = (current + 1) + " / " + photos.length;
+  dots.innerHTML = "";
+  photos.forEach((photo, i) => {
+    const dot = document.createElement("span");
+    dot.className = "dot" + (i === current ? " active" : "");
+    dots.appendChild(dot);
+  });
+}
+
+function move(direction) {
+  current = (current + direction + photos.length) % photos.length;
+  showSlide();
+}
+
+let startX = 0;
+const carousel = document.getElementById("carousel");
+
+carousel.addEventListener("touchstart", e => {
+  startX = e.touches[0].clientX;
+}, {passive:true});
+
+carousel.addEventListener("touchend", e => {
+  const diff = e.changedTouches[0].clientX - startX;
+  if (Math.abs(diff) > 45) move(diff < 0 ? 1 : -1);
+}, {passive:true});
+
+showSlide();
+</script>
+</body>
+</html>
